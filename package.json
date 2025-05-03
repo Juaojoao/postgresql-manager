@@ -1,0 +1,54 @@
+{
+  "name": "postgresql-manager",
+  "version": "1.0.0",
+  "description": "A web application to manage PostgreSQL databases using Next.js.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "ts-node src/scripts/setup.ts",
+    "setup": "npm run migrate && npm run db:seed"
+  },
+  "keywords": [
+    "nextjs",
+    "postgresql",
+    "database",
+    "management"
+  ],
+  "author": "Seu Nome",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@tanstack/react-query": "^5.12.2",
+    "@tanstack/react-query-devtools": "^5.12.2",
+    "@types/bcryptjs": "^2.4.6",
+    "axios": "^1.9.0",
+    "bcryptjs": "^3.0.2",
+    "next": "^14.0.3",
+    "next-auth": "^4.24.5",
+    "pg": "^8.11.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-toastify": "^11.0.5",
+    "tailwindcss": "^3.3.5",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.32",
+    "@types/pg": "^8.10.9",
+    "@types/react": "^18.2.38",
+    "@types/react-dom": "^18.2.15",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.54.0",
+    "eslint-config-next": "^14.0.3",
+    "next-prisma-plugin": "^0.1.1",
+    "postcss": "^8.4.31",
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
