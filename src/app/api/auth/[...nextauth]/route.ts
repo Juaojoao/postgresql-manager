@@ -32,11 +32,7 @@ const authenticateUser = async (
 ): Promise<AuthResult> => {
   try {
     // Buscar usuário pelo email
-    console.log(email);
-
     const user = await prisma.user.findUnique({ where: { email } });
-
-    console.log(user);
 
     if (!user || !user.passwordHash) {
       return { success: false, message: "Usuário não encontrado" };

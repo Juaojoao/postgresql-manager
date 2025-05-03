@@ -5,13 +5,13 @@ import { authOptions } from "../../auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {
-  try {
-    // Verificar autenticação
-    const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
-    }
+  // Verificar autenticação - movido para fora do bloco try para ser acessível em todo o escopo
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "Não autorizado" }, { status: 401 });
+  }
 
+  try {
     // Analisar a requisição
     const { name } = await request.json();
 
@@ -43,6 +43,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Converter userId para número antes de passar ao Prisma
+    const userId = session.user?.id ? parseInt(session.user.id) : null;
+
     // Registrar log da operação
     await prisma.log.create({
       data: {
@@ -52,7 +55,7 @@ export async function POST(request: NextRequest) {
           session.user?.email || "usuário desconhecido"
         }.`,
         databaseId: database.id,
-        userId: session.user?.id,
+        userId: userId,
       },
     });
 
@@ -66,12 +69,15 @@ export async function POST(request: NextRequest) {
 
     // Tentativa de registrar o erro no sistema de logs
     try {
+      // Converter userId para número antes de passar ao Prisma
+      const userId = session.user?.id ? parseInt(session.user.id) : null;
+
       await prisma.log.create({
         data: {
           action: "ERROR",
           message: `Erro ao criar banco de dados: ${error.message}`,
           description: `Ocorreu um erro ao tentar criar o banco de dados: ${error.message}`,
-          userId: session?.user?.id,
+          userId: userId,
         },
       });
     } catch (logError) {

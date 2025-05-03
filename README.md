@@ -2,6 +2,8 @@
 
 Uma aplicação web construída com Next.js para gerenciar bancos de dados PostgreSQL localmente.
 
+![Dashboard do PostgreSQL Manager](/public/dashboard.png)
+
 ## ✨ Funcionalidades
 
 - 📦 Fazer **backup** de qualquer banco de dados PostgreSQL local
@@ -27,6 +29,59 @@ Uma aplicação web construída com Next.js para gerenciar bancos de dados Postg
 - Node.js (v14 ou superior)
 - PostgreSQL instalado no seu sistema
 - Os comandos `pg_dump` e `pg_restore` devem estar disponíveis no PATH do sistema
+
+### Informações Importantes
+
+#### Caminho do PostgreSQL
+
+Para o correto funcionamento da aplicação, é necessário que o PostgreSQL esteja corretamente configurado no sistema. Você pode configurar isso de duas formas:
+
+1. **Usando a variável de ambiente PG_BIN_PATH (Recomendado)**:
+
+   - Adicione a variável `PG_BIN_PATH` no arquivo `.env.local` apontando para o diretório bin do PostgreSQL:
+
+   ```
+   PG_BIN_PATH="C:\\Program Files\\PostgreSQL\\14\\bin"
+   ```
+
+   - Note o uso de barras duplas no caminho do Windows (`\\`)
+   - Esta é a forma mais confiável de garantir que a aplicação localize os executáveis do PostgreSQL, independente da versão instalada
+
+2. **Configurando o PATH do sistema**:
+   Se preferir não usar a variável `PG_BIN_PATH`, o sistema tentará usar caminhos padrão, mas isso pode não funcionar corretamente se sua instalação do PostgreSQL estiver em um local diferente ou tiver uma versão diferente.
+
+   No Windows:
+
+   1. Localize o diretório de instalação do PostgreSQL (geralmente em `C:\Program Files\PostgreSQL\[versão]\bin`)
+   2. Adicione este caminho às variáveis de ambiente do sistema:
+      - Abra "Propriedades do Sistema" > "Variáveis de Ambiente"
+      - Edite a variável "Path" e adicione o caminho completo para o diretório bin
+
+   No Linux/Mac:
+
+   ```bash
+   export PATH=$PATH:/usr/lib/postgresql/[versão]/bin
+   ```
+
+#### Versão no Dashboard
+
+A versão exibida no dashboard é apenas ilustrativa e não reflete a versão real do PostgreSQL instalada no seu sistema. Para verificar a versão real, execute:
+
+```bash
+psql --version
+```
+
+#### Diretório de Backup
+
+Por padrão, os backups são armazenados no diretório configurado na variável `BACKUP_DIR` no arquivo `.env.local`.
+
+Recomendações para diretório de backup:
+
+- Escolha um local com espaço suficiente em disco
+- Certifique-se de que o usuário da aplicação tenha permissões de escrita neste diretório
+- Para backups importantes, considere configurar um caminho em outro dispositivo físico ou serviço de armazenamento em nuvem
+
+Você pode modificar o caminho do diretório de backup a qualquer momento editando o valor de `BACKUP_DIR` no arquivo `.env.local`.
 
 ### Passo a passo para configuração
 
@@ -100,7 +155,13 @@ Você deverá ver uma saída confirmando que as migrações foram aplicadas com 
 O script `setup.ts` é essencial para criar o usuário administrador inicial:
 
 ```bash
-npx ts-node src/scripts/setup.ts
+npx tsx src/scripts/setup.ts
+```
+
+Alternativamente, você pode usar o comando npm definido no package.json:
+
+```bash
+npm run db:seed
 ```
 
 **O que este script faz:**
@@ -124,13 +185,6 @@ npm run dev
 
 #### 8. Acesse a aplicação
 
-Abra seu navegador e acesse [http://localhost:3000](http://localhost:3000)
-
-### Credenciais iniciais
-
-- **Email**: admin@example.com
-- **Senha**: admin123
-
 **⚠️ Importante**: Por segurança, altere essa senha após o primeiro login!
 
 ## 📝 Uso da Aplicação
@@ -138,6 +192,8 @@ Abra seu navegador e acesse [http://localhost:3000](http://localhost:3000)
 ### Dashboard
 
 A página inicial apresenta as funcionalidades principais e métricas do sistema:
+
+![Dashboard](/public/dashboard.png)
 
 - Número de bancos de dados gerenciados
 - Backups disponíveis
@@ -147,6 +203,8 @@ A página inicial apresenta as funcionalidades principais e métricas do sistema
 ### Bancos de Dados
 
 Esta seção permite:
+
+![Gerenciamento de Bancos de Dados](/public/bancoDeDados.png)
 
 - Visualizar todos os bancos de dados PostgreSQL disponíveis
 - Criar novos bancos de dados com facilidade
@@ -174,6 +232,8 @@ Esta seção permite:
 
 A seção de logs exibe um histórico detalhado de todas as operações:
 
+![Logs do Sistema](/public/logs.png)
+
 - Timestamps precisos de cada ação
 - Tipo de operação realizada
 - Usuário responsável pela ação
@@ -181,6 +241,8 @@ A seção de logs exibe um histórico detalhado de todas as operações:
 - Mensagens de erro (se houver)
 
 ## 🔒 Segurança
+
+![Tela de Login](/public/login.png)
 
 - O sistema utiliza autenticação baseada em JWT com NextAuth.js
 - Todas as operações exigem autenticação

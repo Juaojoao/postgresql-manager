@@ -49,10 +49,6 @@ export async function GET(request: NextRequest) {
       const totalLogs = await prisma.log.count({
         where,
       });
-
-      // Verificar se a resposta está correta
-      console.log(`Logs encontrados: ${logs.length}, Total: ${totalLogs}`);
-
       return NextResponse.json({
         logs,
         pagination: {

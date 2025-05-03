@@ -39,23 +39,27 @@ export async function DELETE(request: NextRequest) {
       // Converter userId para número se existir
       const userId = session.user?.id ? parseInt(session.user.id, 10) : null;
 
-      // Registrar log da operação
-      await prisma.log.create({
-        data: {
-          action: "DELETE",
-          message: `Banco de dados '${databaseName}' excluído`,
-          description: `Banco de dados '${databaseName}' foi excluído permanentemente por ${
-            session.user?.email || "usuário desconhecido"
-          }.`,
-          databaseId: database.id,
-          userId: userId,
-        },
-      });
+      // Armazenar o ID do banco de dados para referência
+      const databaseId = database.id;
 
       // Excluir o registro do banco de dados
       await prisma.database.delete({
         where: {
-          id: database.id,
+          id: databaseId,
+        },
+      });
+
+      // Registrar log da operação DEPOIS de excluir o banco de dados
+      // e SEM associar ao banco de dados (já que ele não existe mais)
+      await prisma.log.create({
+        data: {
+          action: "DELETE",
+          message: `Banco de dados '${databaseName}' excluído`,
+          description: `Banco de dados '${databaseName}' (ID: ${databaseId}) foi excluído permanentemente por ${
+            session.user?.email || "usuário desconhecido"
+          }.`,
+          userId: userId,
+          // Não fornecemos o databaseId, para que o log não seja associado ao banco excluído
         },
       });
     }

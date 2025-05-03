@@ -50,7 +50,6 @@ export default function LogsTable() {
         url += `&databaseId=${filter.databaseId}`;
       }
 
-      console.log("Buscando logs:", url);
       const res = await fetch(url);
 
       if (!res.ok) {
@@ -67,7 +66,6 @@ export default function LogsTable() {
         throw new Error("Formato de resposta inválido do servidor");
       }
 
-      console.log(`Logs carregados: ${data.logs.length}`);
       setLogs(data.logs);
       setPagination(
         data.pagination || {

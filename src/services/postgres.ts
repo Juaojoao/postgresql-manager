@@ -17,18 +17,23 @@ const pgConfig = {
 
 // Determina o caminho para os binários do PostgreSQL com base no sistema operacional
 const getPgBinPath = () => {
-  // Caminho padrão para o PostgreSQL em diferentes sistemas operacionais
+  // Se a variável de ambiente PG_BIN_PATH estiver definida, use-a
+  // Esta é a forma recomendada de configurar o caminho para os binários do PostgreSQL
   if (process.env.PG_BIN_PATH) {
     return process.env.PG_BIN_PATH;
   }
 
+  // Caminhos padrão para diferentes sistemas operacionais
+  // Observe que esses são apenas fallbacks e podem não funcionar para todas as instalações
   switch (os.platform()) {
     case "win32":
-      return "C:\\Program Files\\PostgreSQL\\15\\bin";
+      // No Windows, o PostgreSQL geralmente é instalado em Program Files
+      // O número da versão pode variar (14, 15, etc.)
+      return "C:\\Program Files\\PostgreSQL\\14\\bin";
     case "darwin": // macOS
-      return "/Library/PostgreSQL/15/bin";
+      return "/Library/PostgreSQL/14/bin";
     default: // Linux e outros
-      return "/usr/lib/postgresql/15/bin";
+      return "/usr/lib/postgresql/14/bin";
   }
 };
 
@@ -146,10 +151,6 @@ export async function backupDatabase(databaseName: string) {
   const pgDumpPath = getPgDumpPath();
 
   try {
-    console.log(
-      `Iniciando backup do banco '${databaseName}' para '${backupFilePath}'`
-    );
-
     // Executa o comando pg_dump para gerar o backup
     const { stdout, stderr } = await execAsync(
       `"${pgDumpPath}" -U ${pgConfig.user} -h ${pgConfig.host} -p ${pgConfig.port} -F c -b -v -f "${backupFilePath}" ${databaseName}`,
@@ -197,10 +198,6 @@ export async function backupDatabase(databaseName: string) {
       );
     }
 
-    console.log(
-      `Backup concluído: ${backupFileName}, tamanho: ${fileSize} bytes`
-    );
-
     return {
       success: true,
       message: `Backup do banco de dados '${databaseName}' concluído.`,
@@ -231,25 +228,17 @@ export async function restoreDatabase(
     // Verifica se o arquivo de backup existe
     await fs.access(backupFilePath);
 
-    console.log(
-      `Iniciando restauração do backup '${backupFileName}' para o banco '${databaseName}'`
-    );
-
     // Variável para rastrear se o banco foi recém-criado
     let isNewDatabase = false;
 
     // Verifica se o banco de dados existe
     try {
       await createDatabase(databaseName);
-      console.log(`Banco de dados '${databaseName}' criado para restauração`);
       isNewDatabase = true;
     } catch (error: any) {
       if (!error.message.includes("already exists")) {
         throw error;
       }
-      console.log(
-        `Banco de dados '${databaseName}' já existe, continuando com a restauração`
-      );
     }
 
     // Define o comando pg_restore apropriado com base no estado do banco
@@ -276,10 +265,6 @@ export async function restoreDatabase(
         console.warn(`Avisos durante a restauração: ${stderr}`);
       }
     }
-
-    console.log(
-      `Restauração concluída para o banco '${databaseName}' a partir de '${backupFileName}'`
-    );
 
     return {
       success: true,

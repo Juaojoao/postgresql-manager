@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:seed": "ts-node src/scripts/setup.ts",
+    "db:seed": "npx tsx src/scripts/setup.ts",
     "setup": "npm run migrate && npm run db:seed"
   },
   "keywords": [
