@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import { listTables } from "@/services/postgres";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/options";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
     // Tentativa de registrar o erro no sistema de logs mesmo em caso de falha
     try {
       const userId = session?.user?.id ? parseInt(session.user.id, 10) : null;
-      
+
       await prisma.log.create({
         data: {
           action: "ERROR",

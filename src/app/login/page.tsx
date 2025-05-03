@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import LoginForm from "@/components/auth/LoginForm";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Login | PostgreSQL Manager",
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  return <LoginForm />;
+  return (
+    <Suspense fallback={<div className="p-4 text-center">Carregando...</div>}>
+      <LoginForm />
+    </Suspense>
+  );
 }

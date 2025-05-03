@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { restoreDatabase } from "@/services/postgres";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
+import { authOptions } from "../../auth/options";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(request: NextRequest) {

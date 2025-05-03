@@ -9,7 +9,6 @@ export default function LoginForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [debug, setDebug] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -36,7 +35,6 @@ export default function LoginForm() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    setDebug("");
 
     try {
       // Usando o mecanismo de autenticação
@@ -48,7 +46,6 @@ export default function LoginForm() {
 
       if (!result?.ok) {
         setError("Credenciais inválidas. Por favor, tente novamente.");
-        setDebug(result?.error || "Erro não especificado");
         console.error("Falha na autenticação:", result?.error);
       } else {
         router.push("/dashboard");
@@ -58,7 +55,6 @@ export default function LoginForm() {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       setError("Ocorreu um erro ao processar o login.");
-      setDebug(`Erro técnico: ${errorMessage}`);
       console.error("Erro técnico:", error);
     } finally {
       setIsLoading(false);
@@ -77,9 +73,6 @@ export default function LoginForm() {
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
             {error}
-            {debug && (
-              <pre className="mt-2 text-xs overflow-x-auto">{debug}</pre>
-            )}
           </div>
         )}
 

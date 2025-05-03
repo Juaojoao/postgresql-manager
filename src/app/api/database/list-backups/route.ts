@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { listBackups } from "@/services/postgres";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../../auth/[...nextauth]/route";
-import { prisma } from "@/lib/prisma";
+import { authOptions } from "../../auth/options";
 
 export async function GET(request: NextRequest) {
   try {
